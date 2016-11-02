@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.apps import apps
+from django.http import Http404
 
 
 def index_view(request):
@@ -13,4 +14,18 @@ def index_view(request):
 
 
 def model_view(request, model_name):
+    model_name = model_name.lower()
+
+    if not check_if_model_exist(model_name):
+        raise Http404("\"{}\" model doesn't exist".format(model_name))
+
     return render(request, 'min_admin/model_objects.html', {'models': model_name})
+
+
+def check_if_model_exist(model_name):
+    app_models = apps.get_app_config('min_admin').get_models()
+
+    for model in app_models:
+        if model_name == model._meta.verbose_name:
+            return True
+    return False

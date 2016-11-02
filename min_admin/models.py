@@ -17,7 +17,7 @@ class Teacher(models.Model):
                                   primary_key=True)
 
     def __str__(self):
-        return self.person
+        return "{} {}".format(self.person.first_name, self.person.last_name)
 
 
 class Class(models.Model):
