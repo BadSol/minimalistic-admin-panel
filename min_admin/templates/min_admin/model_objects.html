@@ -1,5 +1,11 @@
-{% if models %}
-    {{models}}
+{% if objects %}
+
+<h2>Model objects:</h2>
+    {% for obj in objects %}
+        <li>{{ obj }}</li>
+        <!--<li><a href="{% url 'min_admin:modelObjects' model %}">{{ model }}</a></li>-->
+    <br>
+{% endfor %}
 {% else %}
-    <p> Models doesn't exist </p>
+    <p> Model doesn't have any objects yet </p>
 {% endif %}
