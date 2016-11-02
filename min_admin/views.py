@@ -1,15 +1,16 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.http import HttpResponse
 from django.apps import apps
 
 
-def index(request):
+def index_view(request):
     app_models = apps.get_app_config('min_admin').get_models()
-    model_names = ""
-
+    models = []
     for model in app_models:
-        model_names += "[{}] ".format(model._meta.verbose_name)
+        models.append(model._meta.verbose_name)
 
-    return HttpResponse("Existing models: " + model_names)
+    context = {'models': models}
+    return render(request, 'min_admin/main.html', context)
+
+
+def model_view(request, model_name):
+    return render(request, 'min_admin/model_objects.html', {'models': model_name})

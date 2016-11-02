@@ -5,7 +5,7 @@ from django.apps import apps
 
 class MinAdminApiViewTest(TestCase):
     def test_index_view_status_code_200(self):
-        response = self.client.get(reverse('index'))
+        response = self.client.get(reverse('min_admin:models'))
         assert(response.status_code == 200)
 
     def test_index_view_response_contain_model_names(self):
@@ -13,7 +13,6 @@ class MinAdminApiViewTest(TestCase):
         for model in apps.get_app_config('min_admin').get_models():
             model_names.append(model._meta.verbose_name)
 
-        response = self.client.get(reverse('index'))
-
+        response = self.client.get(reverse('min_admin:models'))
         assert(all(model in response.content for model in model_names))
 
