@@ -1,0 +1,9 @@
+
+{% if object %}
+    <h3>{{ object }}</h3>
+    <h4>{{ model_name }} instance</h4>
+    {% for pair in data %}
+        <li> {{ pair.0 }}: {{pair.1}}</li>
+    {% endfor %}
+
+{% endif %}

@@ -1,20 +1,13 @@
 {% if objects %}
-<h2>Model objects:</h2>
-<!--{{.0}}-->
-{% for obj in objects %}
-    <li>{{ obj.0 }} [
-{% for field in obj|slice:"1:" %}
-    {% if field %}
-        {{ field }}
-    {% endif %}
-{% endfor %}
-   ] </li>
-{% endfor %}
-
-<h2>Model fields:</h2>
-{% for field in fields %}
-    <li>{{ field.name }}</li>
-{% endfor %}
+    <h2>Model objects:</h2>
+    {% for obj in objects %}
+        <li><a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a></li>
+        {% for field in obj|slice:"1:" %}
+                {% for pair in field %}
+                    <li>{{ pair.0 }}: {{pair.1}}</li>
+                {% endfor %}
+        {% endfor %}
+    {% endfor %}
 
 {% else %}
     <p> Model doesn't have any objects yet </p>
