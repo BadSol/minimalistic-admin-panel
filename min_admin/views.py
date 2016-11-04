@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.apps import apps
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
-from django.core import serializers
+from django.core.urlresolvers import reverse
+
 # Utils:
 
 
@@ -28,19 +29,19 @@ def crete_list_of_objects_with_attributes(objects, model_fields):
     return result
 
 
-def get_model_name_or_404(model_name):
+def get_model_name_and_model_obj_or_404(model_name):
     """ returns model_name.lower() or raise 404 if model doesn't exist"""
     model_name = model_name.lower()
-
     if not check_if_model_exist(model_name):
-        raise Http404("\"{}\" model doesn't exist".format(model_name))
-    return model_name
+        raise Http404("\"{}\" model doesn't exist".format(model_name.capitalize()))
+    model = apps.get_app_config('min_admin').get_model(model_name)
+    return model_name, model
 
 
 # VIEWS:
 
 
-def index_view(request):
+def model_list(request):
     app_models = apps.get_app_config('min_admin').get_models()
     models = []
     for model in app_models:
@@ -50,10 +51,8 @@ def index_view(request):
     return render(request, 'min_admin/main.html', context)
 
 
-def model_view(request, model_name):
-    model_name = get_model_name_or_404(model_name)
-
-    model = apps.get_app_config('min_admin').get_model(model_name)
+def object_list(request, model_name):
+    model_name, model = get_model_name_and_model_obj_or_404(model_name)
     model_fields = model._meta.get_fields()
     objects = model.objects.all()
     context = {'objects': crete_list_of_objects_with_attributes(objects, model_fields),
@@ -63,13 +62,12 @@ def model_view(request, model_name):
     return render(request, 'min_admin/model_objects.html', context)
 
 
-def detail_view(request, model_name, pk):
-    model_name = get_model_name_or_404(model_name)
-    model = apps.get_app_config('min_admin').get_model(model_name)
+def object_detail(request, model_name, pk):
+    model_name, model = get_model_name_and_model_obj_or_404(model_name)
     try:
         object_instance = model.objects.get(pk=pk)
     except ObjectDoesNotExist:
-        raise Http404("\"{}\" object doesn't exist".format(model_name))
+        raise Http404("\"{}\" object doesn't exist".format(model_name.capitalize()))
 
     data = model_to_dict(object_instance)
 
@@ -77,3 +75,21 @@ def detail_view(request, model_name, pk):
                'data': data.items(),
                'model_name': model_name.capitalize()}
     return render(request, 'min_admin/details.html', context)
+
+
+def object_delete(request, model_name, pk):
+    model_name, model = get_model_name_and_model_obj_or_404(model_name)  # Making sure model exist
+    model_instance = get_object_or_404(model, pk=pk)
+
+    if request.method == "POST":
+        # delete model instance
+        model_instance.delete()
+
+        return redirect(reverse('min_admin:modelObjects', kwargs={'model_name': model_name}))
+
+    context = {'object': model_instance,
+               'model_name': model_name.capitalize()}
+    return render(request, 'min_admin/delete.html', context)
+
+
+

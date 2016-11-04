@@ -1,0 +1,6 @@
+<h2>Deleting {{ object }}</h2>
+Are you sure, You want to delete this instance of "{{ model_name }}" model?<br><br>
+<form method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Delete</button>
+</form>
