@@ -4,74 +4,8 @@ from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
-# from django.forms import ModelForm
-# from django import forms
-from django.forms.models import ModelForm
-# from django.contrib import messages
-# from django.contrib.admin.views.decorators import staff_member_required
-
-# Utils:
-
-
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.auth.decorators import user_passes_test
-
-
-def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
-                          login_url='admin:login'):
-    """
-    Decorator for views that checks that the user is logged in and is a staff
-    member or superuser, redirecting to the login page if necessary.
-    """
-    actual_decorator = user_passes_test(
-        lambda u: u.is_active and (u.is_staff or u.is_superuser),
-        login_url=login_url,
-        redirect_field_name=redirect_field_name
-    )
-    if view_func:
-        return actual_decorator(view_func)
-    return actual_decorator
-
-
-def get_form(my_model, exclude_list):
-    class MyForm(ModelForm):
-        class Meta:
-            model = my_model
-            exclude = exclude_list
-    return MyForm
-
-
-def check_if_model_exist(model_name):
-    app_models = apps.get_app_config('min_admin').get_models()
-
-    for model in app_models:
-        if model_name == model._meta.verbose_name:
-            return True
-    return False
-
-
-def crete_list_of_objects_with_attributes(objects, model_fields):
-    """
-    prepares a list of object data lists in which each list contains instance of model object and all of its attributes
-    for the sake of displaying object details
-    """
-    result = []
-    for obj in objects:
-        result.append([obj, model_to_dict(obj).items()])
-
-    return result
-
-
-def get_model_name_and_model_obj_or_404(model_name):
-    """ returns model_name.lower() or raise 404 if model doesn't exist"""
-    model_name = model_name.lower()
-    if not check_if_model_exist(model_name):
-        raise Http404("\"{}\" model doesn't exist".format(model_name.capitalize()))
-    model = apps.get_app_config('min_admin').get_model(model_name)
-    return model_name, model
-
-
-# VIEWS:
+from min_admin.utils import super_user_or_staff_member_required, get_model_name_and_model_obj_or_404, \
+    crete_list_of_objects_with_attributes, get_form
 
 
 @super_user_or_staff_member_required
@@ -115,9 +49,6 @@ def object_detail(request, model_name, pk):
 
 @super_user_or_staff_member_required
 def object_delete(request, model_name, pk):
-    # if not request.user.is_staff or not request.user.is_superuser:
-    #     raise Http404()
-
     model_name, model = get_model_name_and_model_obj_or_404(model_name)  # Making sure model exist
     model_instance = get_object_or_404(model, pk=pk)
 
