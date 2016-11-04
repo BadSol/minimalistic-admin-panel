@@ -1,5 +1,6 @@
 {% if objects %}
     <h2>Model objects:</h2>
+        {{ fields }}
     {% for obj in objects %}
         <li><a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a></li>
         {% for field in obj|slice:"1:" %}

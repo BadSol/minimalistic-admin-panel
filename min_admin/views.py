@@ -1,11 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.apps import apps
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
+from django.forms import ModelForm
+from django import forms
+from django.forms.models import ModelForm, ModelFormMetaclass
+from django.contrib import messages
 
 # Utils:
+
+
+def get_form(my_model, exclude_list):
+    class MyForm(ModelForm):
+        class Meta:
+            model = my_model
+            exclude = exclude_list
+    return MyForm
 
 
 def check_if_model_exist(model_name):
@@ -90,6 +102,40 @@ def object_delete(request, model_name, pk):
     context = {'object': model_instance,
                'model_name': model_name.capitalize()}
     return render(request, 'min_admin/delete.html', context)
+
+
+def object_create(request, model_name):
+    model_name, model = get_model_name_and_model_obj_or_404(model_name)
+    form_model = get_form(model, [])
+
+    form = form_model(request.POST or None)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+        return redirect(reverse('min_admin:objectDetail', kwargs={'model_name': model_name, 'pk': instance.pk}))
+
+    context = {'model_name': model_name,
+               "form": form}
+    return render(request, 'min_admin/create_object.html', context)
+
+
+def object_update(request, model_name, pk):
+    model_name, model = get_model_name_and_model_obj_or_404(model_name)
+    instance = get_object_or_404(model, pk=pk)
+    form_model = get_form(model, [])
+
+    form = form_model(request.POST or None, instance=instance)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+        return redirect(reverse('min_admin:objectDetail', kwargs={'model_name': model_name, 'pk': instance.pk}))
+
+    context = {'model_name': model_name,
+               "form": form,
+               "instance": instance}
+    return render(request, 'min_admin/update_object.html', context)
+
+
 
 
 
