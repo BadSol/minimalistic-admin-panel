@@ -1,15 +1,36 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.apps import apps
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
-from django import forms
-from django.forms.models import ModelForm, ModelFormMetaclass
-from django.contrib import messages
+# from django.forms import ModelForm
+# from django import forms
+from django.forms.models import ModelForm
+# from django.contrib import messages
+# from django.contrib.admin.views.decorators import staff_member_required
 
 # Utils:
+
+
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import user_passes_test
+
+
+def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
+                          login_url='admin:login'):
+    """
+    Decorator for views that checks that the user is logged in and is a staff
+    member or superuser, redirecting to the login page if necessary.
+    """
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and (u.is_staff or u.is_superuser),
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if view_func:
+        return actual_decorator(view_func)
+    return actual_decorator
 
 
 def get_form(my_model, exclude_list):
@@ -53,6 +74,7 @@ def get_model_name_and_model_obj_or_404(model_name):
 # VIEWS:
 
 
+@super_user_or_staff_member_required
 def model_list(request):
     app_models = apps.get_app_config('min_admin').get_models()
     models = []
@@ -63,6 +85,7 @@ def model_list(request):
     return render(request, 'min_admin/main.html', context)
 
 
+@super_user_or_staff_member_required
 def object_list(request, model_name):
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
     model_fields = model._meta.get_fields()
@@ -74,6 +97,7 @@ def object_list(request, model_name):
     return render(request, 'min_admin/model_objects.html', context)
 
 
+@super_user_or_staff_member_required
 def object_detail(request, model_name, pk):
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
     try:
@@ -89,7 +113,11 @@ def object_detail(request, model_name, pk):
     return render(request, 'min_admin/details.html', context)
 
 
+@super_user_or_staff_member_required
 def object_delete(request, model_name, pk):
+    # if not request.user.is_staff or not request.user.is_superuser:
+    #     raise Http404()
+
     model_name, model = get_model_name_and_model_obj_or_404(model_name)  # Making sure model exist
     model_instance = get_object_or_404(model, pk=pk)
 
@@ -104,6 +132,7 @@ def object_delete(request, model_name, pk):
     return render(request, 'min_admin/delete.html', context)
 
 
+@super_user_or_staff_member_required
 def object_create(request, model_name):
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
     form_model = get_form(model, [])
@@ -119,6 +148,7 @@ def object_create(request, model_name):
     return render(request, 'min_admin/create_object.html', context)
 
 
+@super_user_or_staff_member_required
 def object_update(request, model_name, pk):
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
     instance = get_object_or_404(model, pk=pk)
