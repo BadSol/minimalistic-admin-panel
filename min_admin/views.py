@@ -56,7 +56,7 @@ def object_delete(request, model_name, pk):
         # delete model instance
         model_instance.delete()
 
-        return redirect(reverse('min_admin:modelObjects', kwargs={'model_name': model_name}))
+        return redirect(reverse('min_admin:objectList', kwargs={'model_name': model_name}))
 
     context = {'object': model_instance,
                'model_name': model_name.capitalize()}
@@ -95,8 +95,4 @@ def object_update(request, model_name, pk):
                "form": form,
                "instance": instance}
     return render(request, 'min_admin/update_object.html', context)
-
-
-
-
 

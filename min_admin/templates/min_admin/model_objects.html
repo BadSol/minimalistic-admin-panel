@@ -1,15 +1,52 @@
-{% if objects %}
-    <h2>Model objects:</h2>
-        {{ fields }}
-    {% for obj in objects %}
-        <li><a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a></li>
-        {% for field in obj|slice:"1:" %}
-                {% for pair in field %}
-                    <li>{{ pair.0 }}: {{pair.1}}</li>
-                {% endfor %}
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Existing {{ model_name }}s:
+            <button type="button" class="btn btn-xs btn-success" style="float: right;">
+                {{ model_name }}
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
+            </button>
+        </h3>
+    </div>
+    <table class="table table-striped">
+        <tbody>
+        {% for obj in objects %}
+        <tr>
+            <td>
+                <a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a>
+            </td>
+            <td>
+                <button type="button" class="btn btn-xs btn-danger" style="float: right;">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr>
         {% endfor %}
-    {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+<!--{% if objects %}-->
+<!--<h2>Model objects:</h2>-->
+<!--{{ fields }}-->
+<!--{% for obj in objects %}-->
+<!--<li><a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a></li>-->
+<!--{% for field in obj|slice:"1:" %}-->
+<!--{% for pair in field %}-->
+<!--<li>{{ pair.0 }}: {{pair.1}}</li>-->
+<!--{% endfor %}-->
+<!--{% endfor %}-->
+<!--{% endfor %}-->
 
 {% else %}
-    <p> Model doesn't have any objects yet </p>
+<p> Model doesn't have any objects yet </p>
 {% endif %}
+
+{% endblock content %}

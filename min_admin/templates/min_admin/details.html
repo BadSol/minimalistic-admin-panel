@@ -1,8 +1,24 @@
-{% if object %}
-    <h3>{{ object }}</h3>
-    <h4>{{ model_name }} instance</h4>
-    {% for pair in data %}
-        <li> {{ pair.0 }}: {{pair.1}}</li>
-    {% endfor %}
+{% extends "base.html" %}
+{% block content %}
 
-{% endif %}
+<div class="page-header">
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ object }}
+            <button type="button" class="btn btn-xs btn-primary" style="float: right;">
+                {{ model_name }}
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"> </span>
+            </button>
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% for pair in data %}
+        <li> {{ pair.0 }}: {{pair.1}}</li>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock content %}

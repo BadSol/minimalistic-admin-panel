@@ -1,6 +1,20 @@
-<h2>Deleting {{ object }}</h2>
-Are you sure, You want to delete this instance of "{{ model_name }}" model?<br><br>
-<form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Delete</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+</div>
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ object }}</h3>
+    </div>
+    <div class="panel-body">
+        <div class='col-sm-6'>
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="save btn btn-danger">Delete  {{ model_name }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

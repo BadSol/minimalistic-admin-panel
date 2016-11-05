@@ -55,7 +55,7 @@ ROOT_URLCONF = 'minimalistic_admin_module.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['min_admin/templates/min_admin'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
