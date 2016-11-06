@@ -6,11 +6,24 @@
 
 <div class="panel panel-info">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ object }}
-            <button type="button" class="btn btn-xs btn-primary" style="float: right;">
-                {{ model_name }}
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"> </span>
-            </button>
+        <h3 class="panel-title">
+            <a href="{% url 'min_admin:objectList' model_name %}"> {{ model_name}}</a> /
+            {{ object }}
+            <a href="{% url 'min_admin:objectDelete' model_name id %}">
+
+                <button type="button" class="btn btn-xs btn-danger" style="float: right;">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"> </span>
+                </button>
+            </a>
+            <a href="{% url 'min_admin:objectEdit' model_name id %}">
+
+                <button type="button" class="btn btn-xs btn-primary" style="float: right;">
+                    {{ model_name }}
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"> </span>
+                </button>
+            </a>
+
+
         </h3>
     </div>
     <div class="panel-body">

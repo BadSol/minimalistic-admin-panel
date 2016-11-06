@@ -3,6 +3,7 @@ from django.http import Http404
 from django.forms.models import model_to_dict, ModelForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
@@ -69,3 +70,18 @@ def get_model_name_and_model_obj_or_404(model_name):
         raise Http404("\"{}\" model doesn't exist".format(model_name.capitalize()))
     model = apps.get_app_config('min_admin').get_model(model_name)
     return model_name, model
+
+
+def paginate(data, page, items_per_page=15):
+    """
+    This method creates data for pagination
+    """
+    paginator = Paginator(data, items_per_page)
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+
+    return items

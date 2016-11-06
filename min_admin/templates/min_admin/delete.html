@@ -5,7 +5,10 @@
 </div>
 <div class="panel panel-danger">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ object }}</h3>
+        <h3 class="panel-title">
+            <a href="{% url 'min_admin:objectDetail' model_name id %}">{{ model_name }} object</a> /
+            {{ object }}
+        </h3>
     </div>
     <div class="panel-body">
         <div class='col-sm-6'>

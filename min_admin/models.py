@@ -11,7 +11,7 @@ class Person(models.Model):
         return "{} {}".format(self.first_name, self.last_name)
 
 
-class Teacher(models.Model):
+class Teacher(models.Model):  # todo: there should be id field which points at person.id
     person = models.OneToOneField(Person,
                                   on_delete=models.CASCADE,
                                   primary_key=True)

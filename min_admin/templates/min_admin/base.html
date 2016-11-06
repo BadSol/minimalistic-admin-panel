@@ -17,14 +17,38 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-          <div class="container">
-          <a class="navbar-brand" href="{% url 'min_admin:models' %}">Minimalistic administration</a>
-      </div>
-    </nav>
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'min_admin:models' %}">Minimalistic administration</a>
+    </div>
+</nav>
 <!--<br><br><br>-->
 <div class='container'>
     {% block content %}{% endblock content %}
+    {% if objects.has_other_pages %}
+    <ul class="pagination">
+        {% if objects.has_previous %}
+        <li><a href="?page={{ objects.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for i in objects.paginator.page_range %}
+        {% if objects.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if objects.has_next %}
+        <li><a href="?page={{ objects.next_page_number }}">&raquo;</a></li>
+        {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+    </ul>
+    {% endif %}
 </div>
+
+
+
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

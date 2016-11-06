@@ -2,15 +2,24 @@
 {% block content %}
 
 
-<h2>Create new {{ model_name }} object</h2>
-
-<div class='col-sm-6'>
-<h1>Form</h1>
-
-<form method='POST' action='' enctype='multipart/form-data'>{% csrf_token %}
-{{ form.as_p }}
-<input type='submit' class='btn btn-default' value='Create Post' />
-</form>
+<div class="page-header">
 </div>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Create new {{ model_name }} object</h3>
+    </div>
+    <div class="panel-body">
+        <div class='col-sm-6'>
+
+            <form method='POST' action='' enctype='multipart/form-data'>{% csrf_token %}
+                {{ form.as_p }}
+                <input type='submit' class='btn btn-default' value='Create {{ model_name }}' />
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 
 {% endblock content %}

@@ -6,11 +6,15 @@
 
 <div class="panel panel-info">
     <div class="panel-heading">
-        <h3 class="panel-title">Existing {{ model_name }}s:
-            <button type="button" class="btn btn-xs btn-success" style="float: right;">
-                {{ model_name }}
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
-            </button>
+        <h3 class="panel-title">
+            <a href="{% url 'min_admin:models' %}">Models</a> /
+            Existing {{ model_name }}s:
+            <a href="{% url 'min_admin:objectCreate' model_name%}">
+                <button type="button" class="btn btn-xs btn-success" style="float: right;">
+                    {{ model_name }}
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
+                </button>
+            </a>
         </h3>
     </div>
     <table class="table table-striped">
@@ -21,17 +25,17 @@
                 <a href="{% url 'min_admin:objectDetail' model_name obj.0.pk %}">{{ obj.0 }}</a>
             </td>
             <td>
-                <button type="button" class="btn btn-xs btn-danger" style="float: right;">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
+                <form action="{% url 'min_admin:objectDelete' model_name obj.0.pk %}" method="POST">{% csrf_token %}
+                    <button type="submit" class="btn btn-xs btn-danger" style="float: right;">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </form>
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
-
-
 
 <!--{% if objects %}-->
 <!--<h2>Model objects:</h2>-->
