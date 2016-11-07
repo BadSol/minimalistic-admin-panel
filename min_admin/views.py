@@ -8,10 +8,6 @@ from min_admin.utils import super_user_or_staff_member_required, get_model_name_
     crete_list_of_objects_with_attributes, get_form, paginate
 
 
-
-
-
-
 @super_user_or_staff_member_required
 def model_list(request):
     page = request.GET.get('page', 1)
@@ -30,14 +26,14 @@ def model_list(request):
 def object_list(request, model_name):
     page = request.GET.get('page', 1)
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
-    model_fields = model._meta.get_fields()
+    # model_fields = model._meta.get_fields()
     objects = model.objects.all()
-    objects = crete_list_of_objects_with_attributes(objects, model_fields)
+    objects = crete_list_of_objects_with_attributes(objects)
 
     items = paginate(objects, page)
 
     context = {'objects': items,
-               'fields': model_fields,
+               # 'fields': model_fields,
                'model_name': model_name}
 
     return render(request, 'min_admin/model_objects.html', context)
@@ -66,7 +62,6 @@ def object_delete(request, model_name, pk):
     model_instance = get_object_or_404(model, pk=pk)
 
     if request.method == "POST":
-        # delete model instance
         model_instance.delete()
 
         return redirect(reverse('min_admin:objectList', kwargs={'model_name': model_name}))
@@ -81,8 +76,8 @@ def object_delete(request, model_name, pk):
 def object_create(request, model_name):
     model_name, model = get_model_name_and_model_obj_or_404(model_name)
     form_model = get_form(model, [])
-
     form = form_model(request.POST or None)
+
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()

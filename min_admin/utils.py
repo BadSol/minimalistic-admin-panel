@@ -48,10 +48,9 @@ def check_if_model_exist(model_name):  # todo: merge into get_model_name_and_mod
     return False
 
 
-def crete_list_of_objects_with_attributes(objects, model_fields):
+def crete_list_of_objects_with_attributes(objects):
     """
-    prepares a list of object data lists in which each list contains instance of model object and all of its attributes
-    for the sake of displaying object details
+    converts list of objects into a list of object dictionaries
     """
     result = []
     for obj in objects:
