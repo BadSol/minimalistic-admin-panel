@@ -5,10 +5,12 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+ITEMS_PER_PAGE = 15
+
 
 def get_form(my_model, exclude_list):
     """
-    creates ModelForm based on model object
+    creates ModelForm object based on model object
     :param my_model: Any model added to app models
     :param exclude_list: List of fields, that should be excluded from created form. In case of this project its easier
     and faster to pass empty list as argument, than get and format model fields just to pass it here
@@ -21,7 +23,7 @@ def get_form(my_model, exclude_list):
     return MyForm
 
 
-def check_if_model_exist(model_name):  # todo: merge into get_model_name_and_model_obj_or_404 method
+def check_if_model_exist(model_name):
 
     app_models = apps.get_app_config('min_admin').get_models()
 
@@ -54,7 +56,7 @@ def get_model_name_and_model_obj_or_404(model_name):
     return model_name, model
 
 
-def paginate(data, page, items_per_page=15):
+def paginate(data, page, items_per_page=ITEMS_PER_PAGE):
     """
     This method creates data for pagination
     """
@@ -74,7 +76,6 @@ def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDI
     """
     Decorator for views that checks that the user is logged in and is a staff
     member or superuser, redirecting to the login page if necessary.
-
     """
     actual_decorator = user_passes_test(
         lambda u: u.is_active and (u.is_staff or u.is_superuser),

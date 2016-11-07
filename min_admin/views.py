@@ -105,4 +105,3 @@ def object_update(request, model_name, pk):
                "form": form,
                "instance": instance}
     return render(request, 'min_admin/update_object.html', context)
-

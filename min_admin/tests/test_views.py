@@ -156,8 +156,8 @@ def test_object_create_view_creating_object_instance(admin_client):
     first_name = 'test_first_name'
     last_name = 'test_last_name'
     admin_client.post(reverse('min_admin:objectCreate', kwargs={'model_name': 'person'}),
-                                 {'first_name': first_name,
-                                  'last_name': last_name})
+                      {'first_name': first_name,
+                       'last_name': last_name})
 
     assert (first_name and last_name) in str(Person.objects.get())
 
