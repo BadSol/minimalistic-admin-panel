@@ -1,34 +1,19 @@
 import pytest
 from min_admin.views import *
 from min_admin.models import Person
-"""
-to test:
-others:
-putting min_admin to different url root
-I can't test models
+from min_admin.utils import ITEMS_PER_PAGE
 
-views:
-model_list
-    status_code 200 - ok
-    display all of existing models - ok
-object_list
-    display correct data / 404 when model not found - ok
-    redirect - ok
-    displays objects - ok
-    paginate - ok
-object_detail
-    status code - ok
-    forward - ok
-    display correct data - ok
-    404 when model/obj not found -ok
-object_create
-    get / post(save obj) - all ok
-object_delete
-    get / post(delete obj) - all ok
-object_update
-    get / post(update obj) - all ok
-    displays correct data - ok
-"""
+
+def create_person_object(first_name='First', last_name='Last'):
+    """
+    create person instance, returns pk
+    :param first_name:
+    :param last_name:
+    :return: pk
+    """
+    person = Person(first_name=first_name, last_name=last_name)
+    person.save()
+    return person._get_pk_val()
 
 
 def test_assert_that_unauthorized_users_get_forwarded_to_login_page(client):
@@ -66,15 +51,14 @@ def test_object_list_view_as_authorized_nonexistent_model(admin_client):
 
 
 def test_object_list_view_displaying_model_instances(admin_client):
-    person = Person(first_name='First', last_name='Last')
-    person.save()
+    create_person_object()
 
     response = admin_client.get(reverse('min_admin:objectList', kwargs={'model_name': 'person'}))
     assert("First Last" in response.content)
 
 
 def test_paginator_on_object_list_view(admin_client):
-    for person in range(0, 16):  # todo: move pagination default objects per page to settings
+    for person in range(0, ITEMS_PER_PAGE+1):
         person_instance = Person(first_name=str(person), last_name='test')
         person_instance.save()
 
@@ -84,9 +68,7 @@ def test_paginator_on_object_list_view(admin_client):
 
 @pytest.mark.django_db
 def test_object_detail_view_as_unauthorized(client):
-    person = Person(first_name='First', last_name='Last')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     response = client.get(reverse('min_admin:objectDetail', kwargs={'model_name': 'person',
                                                                     'pk': pk}), follow=True)
@@ -95,9 +77,7 @@ def test_object_detail_view_as_unauthorized(client):
 
 
 def test_object_detail_view_as_authorized(admin_client):
-    person = Person(first_name='First', last_name='Last')  # todo: DRY
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     response = admin_client.get(reverse('min_admin:objectDetail', kwargs={'model_name': 'person',
                                                                           'pk': pk}))
@@ -164,9 +144,7 @@ def test_object_create_view_creating_object_instance(admin_client):
 
 @pytest.mark.django_db
 def test_object_update_view_as_unauthorized(client):
-    person = Person(first_name='First', last_name='Last')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     response = client.get(reverse('min_admin:objectEdit', kwargs={'model_name': 'person', 'pk': pk}), follow=True)
 
@@ -174,9 +152,7 @@ def test_object_update_view_as_unauthorized(client):
 
 
 def test_object_update_view_as_authorized(admin_client):
-    person = Person(first_name='First', last_name='Last')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     response = admin_client.get(reverse('min_admin:objectEdit', kwargs={'model_name': 'person', 'pk': pk}))
 
@@ -206,9 +182,7 @@ def test_object_update_view_as_authorized_nonexistent_model_instance(admin_clien
 
 
 def test_object_update_view_updating_object_instance(admin_client):
-    person = Person(first_name='FN_before', last_name='LN_before')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     first_name_after = 'FN_after'
     last_name_after = 'LN_after'
@@ -232,9 +206,7 @@ def test_object_delete_view_as_unauthorized(client):
 
 
 def test_object_delete_view_as_authorized(admin_client):
-    person = Person(first_name='First', last_name='Last')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     response = admin_client.get(reverse('min_admin:objectDelete', kwargs={'model_name': 'person', 'pk': pk}))
 
@@ -254,9 +226,7 @@ def test_object_delete_view_as_authorized_nonexistent_model_instance(admin_clien
 
 
 def test_object_delete_view_deleting_object_instance(admin_client):
-    person = Person(first_name='Test', last_name='Person')
-    person.save()
-    pk = person._get_pk_val()
+    pk = create_person_object()
 
     admin_client.post(reverse('min_admin:objectDelete', kwargs={'model_name': 'person', 'pk': pk}))
 

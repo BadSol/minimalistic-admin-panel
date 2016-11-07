@@ -3,19 +3,6 @@ from min_admin.views import *
 from min_admin.models import Person
 from min_admin.utils import get_form, get_model_name_and_model_obj_or_404, check_if_model_exist, paginate
 
-"""
-to test:
-others:
-putting min_admin to different url root
-I can't test models
-
-utils:
-get_form - ok
-check_if_model_exist - ok
-crete_list_of_objects_with_attributes - ok
-get_model_name_and_model_obj_or_404 - all ok
-"""
-
 
 def test_get_model_name_and_model_obj_or_404_successful():
     model_name, model = get_model_name_and_model_obj_or_404('PERSON')
