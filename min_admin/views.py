@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.apps import apps
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
+
 from min_admin.utils import super_user_or_staff_member_required, get_model_name_and_model_obj_or_404, \
     crete_list_of_objects_with_attributes, get_form, paginate
 
@@ -105,3 +106,5 @@ def object_update(request, model_name, pk):
                "form": form,
                "instance": instance}
     return render(request, 'min_admin/update_object.html', context)
+
+

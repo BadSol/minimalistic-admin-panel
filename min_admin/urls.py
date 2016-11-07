@@ -8,5 +8,5 @@ urlpatterns = [
     url(r'^(?P<model_name>\w{0,20})/(?P<pk>[0-9]+)/$', views.object_detail, name='objectDetail'),
     url(r'^(?P<model_name>\w{0,20})/(?P<pk>[0-9]+)/delete/$', views.object_delete, name='objectDelete'),
     url(r'^(?P<model_name>\w{0,20})/(?P<pk>[0-9]+)/edit/$', views.object_update, name='objectEdit'),
-    url(r'^(?P<model_name>\w{0,20})/create/$', views.object_create, name='objectCreate'),
+    url(r'^(?P<model_name>\w{0,20})/create/$', views.object_create, name='objectCreate')
 ]
