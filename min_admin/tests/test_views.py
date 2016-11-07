@@ -1,23 +1,11 @@
 import pytest
 from min_admin.views import *
 from min_admin.models import Person
-# from min_admin.utils import get_form, get_model_name_and_model_obj_or_404
-from django.core.exceptions import ObjectDoesNotExist
-# from django_fake_model import models as f  # Didin't manage to use it
 """
 to test:
 others:
 putting min_admin to different url root
 I can't test models
-
-utils:
-get_form
-check_if_model_exist
-crete_list_of_objects_with_attributes
-get_model_name_and_model_obj_or_404
-paginate
-    can't test it for models
-    test for model instances - ok
 
 views:
 model_list

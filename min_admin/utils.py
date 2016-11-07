@@ -6,23 +6,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
-                                        login_url='admin:login'):
-    """
-    Decorator for views that checks that the user is logged in and is a staff
-    member or superuser, redirecting to the login page if necessary.
-
-    """
-    actual_decorator = user_passes_test(
-        lambda u: u.is_active and (u.is_staff or u.is_superuser),
-        login_url=login_url,
-        redirect_field_name=redirect_field_name
-    )
-    if view_func:
-        return actual_decorator(view_func)
-    return actual_decorator
-
-
 def get_form(my_model, exclude_list):
     """
     creates ModelForm based on model object
@@ -84,3 +67,20 @@ def paginate(data, page, items_per_page=15):
         items = paginator.page(paginator.num_pages)
 
     return items
+
+
+def super_user_or_staff_member_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
+                                        login_url='admin:login'):
+    """
+    Decorator for views that checks that the user is logged in and is a staff
+    member or superuser, redirecting to the login page if necessary.
+
+    """
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and (u.is_staff or u.is_superuser),
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if view_func:
+        return actual_decorator(view_func)
+    return actual_decorator
